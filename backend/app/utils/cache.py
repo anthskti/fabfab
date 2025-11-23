@@ -1,5 +1,5 @@
 """
-cache.py - In-memory model storage with TTL
+cache.py - In-memory model storage with TTL for 1 hour.
 """
 import time
 from typing import Dict, Optional, Any
