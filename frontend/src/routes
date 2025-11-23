@@ -1,0 +1,97 @@
+// src/services/routes.js
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+class ModelGeneratorAPI {
+  constructor() {
+    this.baseURL = API_BASE_URL;
+  }
+
+  // Helper method for making requests
+  async request(endpoint, options = {}) {
+    const url = `${this.baseURL}${endpoint}`;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    };
+
+    try {
+      const response = await fetch(url, config);
+      
+      // Handle non-JSON responses (like file downloads)
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/octet-stream')) {
+        return await response.blob();
+      }
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error(`API Error (${endpoint}):`, error);
+      throw error;
+    }
+  }
+
+  // POST /api/generate - Generate Model
+  async generateModel(modelDescription) {
+    return this.request('/api/generate', {
+      method: 'POST',
+      body: JSON.stringify({ description: modelDescription }),
+    });
+  }
+
+  // POST /api/modify - Modify Model
+  async modifyModel(modelId, modifications) {
+    return this.request('/api/modify', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        model_id: modelId, 
+        modifications 
+      }),
+    });
+  }
+
+  // GET /api/download/{model_id} - Download Model
+  async downloadModel(modelId) {
+    const blob = await this.request(`/api/download/${modelId}`, {
+      method: 'GET',
+    });
+    
+    // Create download link
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `model_${modelId}.obj`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    
+    return blob;
+  }
+
+  // GET /api/cache/stats - Get Cache Stats
+  async getCacheStats() {
+    return this.request('/api/cache/stats', {
+      method: 'GET',
+    });
+  }
+
+  // DELETE /api/cache/{model_id} - Delete Cached Model
+  async deleteCachedModel(modelId) {
+    return this.request(`/api/cache/${modelId}`, {
+      method: 'DELETE',
+    });
+  }
+}
+
+// Export singleton instance
+export default new ModelGeneratorAPI();
