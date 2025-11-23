@@ -2,17 +2,18 @@
 main.py - FastAPI Application Entry Point
 """
 
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import uvicorn
 import os
-from dotenv import load_dotenv
 
 from app.routers import generate
-
-# Load environment variables
-load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI(
