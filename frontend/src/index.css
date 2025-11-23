@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 240 7% 5%;
+    --foreground: 0 0% 100%;
+
+    --card: 240 5% 7%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 240 5% 7%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 180 70% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 5% 12%;
+    --secondary-foreground: 240 5% 80%;
+
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 4% 56%;
+
+    --accent: 180 70% 42%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 5% 12%;
+    --input: 240 5% 12%;
+    --ring: 180 70% 42%;
+
+    --radius: 0.5rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(180 70% 42%), hsl(180 70% 50%));
+    --gradient-accent: linear-gradient(135deg, hsl(180 70% 38%), hsl(180 70% 46%));
+    --gradient-dark: linear-gradient(180deg, hsl(240 7% 5%), hsl(240 5% 7%));
+    
+    --glow-primary: 0 0 30px hsl(180 70% 42% / 0.3);
+    --glow-accent: 0 0 30px hsl(180 70% 42% / 0.25);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background: hsl(240 7% 5%);
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(180 70% 42%), hsl(180 70% 50%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-accent {
+    background: linear-gradient(135deg, hsl(180 70% 38%), hsl(180 70% 46%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .glow-primary {
+    box-shadow: 0 0 30px hsl(180 70% 42% / 0.3);
+  }
+  
+  .glow-accent {
+    box-shadow: 0 0 30px hsl(180 70% 42% / 0.25);
+  }
+}
