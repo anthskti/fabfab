@@ -1,0 +1,89 @@
+# --------------------
+# Python
+# --------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+# virtualenvs
+.venv/
+venv/
+env/
+ENV/
+.env
+# packaging / build
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+wheelhouse/
+# pytest / coverage
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage/
+# common IDEs/editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# --------------------
+# Node / JavaScript / React
+# --------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+# build outputs
+dist/
+build/
+out/
+.next/
+.nuxt/
+.parcel-cache/
+.cache/
+public/build/
+# storybook, etc.
+storybook-static/
+
+# --------------------
+# Environment files
+# --------------------
+.env.local
+.env.*.local
+.env
+
+# --------------------
+# CSS / HTML / Tailwind
+# --------------------
+# ignore generated/minified CSS and sourcemaps (keep source css/partials tracked)
+*.min.css
+*.css.map
+# common generated CSS locations (build outputs)
+**/dist/*.css
+**/build/*.css
+public/css/
+assets/css/
+
+# If using Tailwind's output file in a specific path, adjust or remove the line above.
+
+# --------------------
+# Misc / OS / tooling
+# --------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.tmp
+*.temp
+# Editor swap files
+*~
+*.swp
+# macOS resource forks
+._*
+# npm package lock files are usually tracked — do not ignore package-lock.json / yarn.lock unless intentional.
+
