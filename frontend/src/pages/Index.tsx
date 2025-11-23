@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GenerationForm } from "@/components/GenerationForm";
-import { ModelViewer } from "@/components/ModelViewer";
+import { ModelViewer } from "@/components/ModelViewer.tsx";
 import { ModelControls } from "@/components/ModelControls";
 import { Box } from "lucide-react";
 const Index = () => {
