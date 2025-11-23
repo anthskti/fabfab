@@ -2,6 +2,7 @@
 
 ## File Structure
 
+```
 backend/
 ├── app/
 │   ├── models/
@@ -17,6 +18,7 @@ backend/
 ├── requirements.txt
 ├── .env.example
 └── README.md
+```
 
 ## Running
 Virtual Environment
