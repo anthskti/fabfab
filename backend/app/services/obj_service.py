@@ -290,9 +290,13 @@ class OBJService:
             if not has_faces:
                 return False, "No faces found"
             
-            # Basic syntax check
+            # Basic syntax check - more lenient
+            line_num = 0
             for line in obj_content.split('\n'):
+                line_num += 1
                 line = line.strip()
+                
+                # Skip empty lines and comments
                 if not line or line.startswith('#'):
                     continue
                 
@@ -301,10 +305,17 @@ class OBJService:
                     continue
                 
                 cmd = parts[0]
-                if cmd == 'v' and len(parts) != 4:
-                    return False, f"Invalid vertex definition: {line}"
-                elif cmd == 'vn' and len(parts) != 4:
-                    return False, f"Invalid normal definition: {line}"
+                
+                # Validate commands that need specific formats
+                if cmd == 'v':
+                    # Remove any inline comments first
+                    clean_parts = line.split('#')[0].split()
+                    if len(clean_parts) != 4:
+                        return False, f"Invalid vertex definition at line {line_num}: {line}"
+                elif cmd == 'vn':
+                    clean_parts = line.split('#')[0].split()
+                    if len(clean_parts) != 4:
+                        return False, f"Invalid normal definition at line {line_num}: {line}"
             
             return True, "Valid OBJ file"
             
