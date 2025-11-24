@@ -8,69 +8,22 @@ generate.py - API routes for model generation and modification
 from fastapi import APIRouter, HTTPException, Response
 from fastapi.responses import PlainTextResponse
 import asyncio
+from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel
+import tempfile
+import os
+from backend.app.services.agent import root_agent
 
-from app.models.schema import (
+from backend.app.models.schema import (
     GenerateRequest, GenerateResponse,
     ModifyRequest, ModifyResponse,
-    ErrorResponse
+    ErrorResponse, QueryRequest, ModelResponse
 )
-from app.services.gemini_service import GeminiService
-from app.services.obj_service import OBJService
-from app.utils.cache import model_cache
+from backend.app.services.obj_service import OBJService
+from backend.app.utils.cache import model_cache
 
 router = APIRouter()
 
-@router.post("/generate", response_model=GenerateResponse)
-async def generate_model(request: GenerateRequest):
-    """
-    Generate a new 3D model from prompt and optional image
-    Args: request: GenerateRequest with prompt, optional image, and style
-    Returns: GenerateResponse with obj_content, model_id, and available_modifiers
-    """
-    try:
-        # Step 1: Generate OBJ using Gemini
-        print(f"Generating model for prompt: '{request.prompt}' with style: {request.style}")
-        
-        obj_content = await GeminiService.generate_obj(
-            prompt=request.prompt,
-            style=request.style,
-            image_base64=request.image
-        )
-        
-        # Validate generated OBJ
-        is_valid, error_msg = OBJService.validate_obj(obj_content)
-        if not is_valid:
-            raise HTTPException(status_code=500, detail=f"Generated invalid OBJ: {error_msg}")
-        
-        # Step 2: Extract features/modifiers using Gemini
-        print("Extracting features from generated model...")
-        
-        modifiers = await GeminiService.extract_features(
-            obj_content=obj_content,
-            original_prompt=request.prompt
-        )
-        
-        # Step 3: Store in cache
-        model_id = model_cache.store(
-            obj_content=obj_content,
-            modifiers=modifiers,
-            prompt=request.prompt
-        )
-        
-        print(f"Model generated successfully with ID: {model_id}")
-        
-        return GenerateResponse(
-            obj_content=obj_content,
-            model_id=model_id,
-            available_modifiers=modifiers,
-            preview_thumbnail=None  # TODO: Generate thumbnail
-        )
-        
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=504, detail="Generation timeout - please try again")
-    except Exception as e:
-        print(f"Error in generate_model: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/modify", response_model=ModifyResponse)
 async def modify_model(request: ModifyRequest):
@@ -173,3 +126,40 @@ async def delete_cached_model(model_id: str):
     """Delete a model from cache"""
     model_cache.delete(model_id)
     return {"status": "deleted", "model_id": model_id}
+
+@router.post("/generate-model", response_model=GenerateResponse)
+async def generate_model(request: GenerateRequest):
+    """
+    Generate a 3D model from a text description.
+
+    Args:
+        request: QueryRequest with 'query' field
+
+    Returns:
+        ModelResponse with OBJ content and metadata
+    """
+    try:
+        if not request.query or request.query.strip() == "":
+            raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+        # Run the agent
+        result = root_agent.run(request.query)
+
+        # Post-process the output
+        obj_content = result.data["formatted_output"]
+        obj_content = obj_content.replace("\\n", "\n")
+
+        # Calculate stats
+        stats = {
+            "vertices": obj_content.count('\nv '),
+            "faces": obj_content.count('\nf '),
+            "normals": obj_content.count('\nvn '),
+            "texture_coords": obj_content.count('\nvt ')
+        }
+
+        return GenerateResponse(
+            obj_content=obj_content
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating model: {str(e)}")

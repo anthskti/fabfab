@@ -18,7 +18,7 @@ class Modifier(BaseModel):
 class GenerateRequest(BaseModel):
     prompt: str = Field(..., min_length=3, max_length=200, description="Description a 3D model you want to generate!")
     image: Optional[str] = Field(None, description="Base64 encoded image (optional)")
-    style: Literal["realistic", "low-poly", "stylized"] = Field(default="low-poly")
+    #style: Literal["realistic", "low-poly", "stylized"] = Field(default="low-poly")
     
     @validator('prompt')
     def validate_prompt(cls, v):
@@ -29,9 +29,9 @@ class GenerateRequest(BaseModel):
 # Response model for generated 3D object
 class GenerateResponse(BaseModel):
     obj_content: str = Field(..., description="Complete .obj file content")
-    model_id: str = Field(..., description="Unique id for the model")
-    preview_thumbnail: Optional[str] = Field(None, description="Base64 encoded preview image")
-    available_modifiers: Dict[str, Modifier] = Field(default_factory=dict)
+    #model_id: str = Field(..., description="Unique id for the model")
+    #preview_thumbnail: Optional[str] = Field(None, description="Base64 encoded preview image")
+    #available_modifiers: Dict[str, Modifier] = Field(default_factory=dict)
 
 # Request model for generated 3D, get Id and applies modification
 class ModifyRequest(BaseModel):
@@ -55,5 +55,15 @@ class ModifyResponse(BaseModel):
 class ErrorResponse(BaseModel):
     error: str
     detail: Optional[str] = None
+
+# Request/Response Models
+class QueryRequest(BaseModel):
+    query: str
+
+class ModelResponse(BaseModel):
+    success: bool
+    obj_content: str
+    message: str
+    stats: dict
 
 
