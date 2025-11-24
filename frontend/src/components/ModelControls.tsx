@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Download, Settings2 } from "lucide-react";
 import { toast } from "sonner";
+import modelAPI from '../routes.js';
 export const ModelControls = () => {
   const [size, setSize] = useState([1]);
   const [quality, setQuality] = useState([80]);

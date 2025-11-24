@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Grid3x3, Upload } from 'lucide-react';
+import { Box, Grid3x3 } from 'lucide-react';
 import * as THREE from 'three';
 
-export const ModelViewer = () => {
+export const ModelViewer = ({ modelUrl }) => {
   const containerRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
@@ -234,101 +234,84 @@ export const ModelViewer = () => {
     return { geometry, hasVertexColors };
   };
 
-  const loadOBJFile = (file) => {
+  const loadOBJFromURL = async (url) => {
     setIsLoading(true);
     setError(null);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target.result;
-        const { geometry, hasVertexColors } = parseOBJ(text);
-
-        // Remove old model if exists
-        if (modelRef.current) {
-          sceneRef.current.remove(modelRef.current);
-          modelRef.current.geometry.dispose();
-          modelRef.current.material.dispose();
-        }
-
-        // Create new model with appropriate material
-        const material = new THREE.MeshPhongMaterial({
-          color: hasVertexColors ? 0xffffff : 0x00ffff,
-          shininess: 30,
-          flatShading: false,
-          vertexColors: hasVertexColors
-        });
-        const mesh = new THREE.Mesh(geometry, material);
-
-        // Center and scale the model
-        geometry.computeBoundingBox();
-        const bbox = geometry.boundingBox;
-        const center = new THREE.Vector3();
-        bbox.getCenter(center);
-        
-        // Move geometry to center at origin
-        geometry.translate(-center.x, -center.y, -center.z);
-        
-        // Recompute bounding box after translation
-        geometry.computeBoundingBox();
-        const size = new THREE.Vector3();
-        geometry.boundingBox.getSize(size);
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 4 / maxDim;
-        mesh.scale.setScalar(scale);
-        
-        // Position mesh slightly above the grid
-        mesh.position.set(0, size.y * scale * 0.5, 0);
-
-        sceneRef.current.add(mesh);
-        modelRef.current = mesh;
-        setHasModel(true);
-        setIsLoading(false);
-      } catch (err) {
-        setError('Failed to load OBJ file. Please ensure it\'s a valid OBJ format.');
-        setIsLoading(false);
-        console.error(err);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch model: ${response.statusText}`);
       }
-    };
+      
+      const text = await response.text();
+      const { geometry, hasVertexColors } = parseOBJ(text);
 
-    reader.onerror = () => {
-      setError('Failed to read file');
+      // Remove old model if exists
+      if (modelRef.current) {
+        sceneRef.current.remove(modelRef.current);
+        modelRef.current.geometry.dispose();
+        modelRef.current.material.dispose();
+      }
+
+      // Create new model with appropriate material
+      const material = new THREE.MeshPhongMaterial({
+        color: hasVertexColors ? 0xffffff : 0x00ffff,
+        shininess: 30,
+        flatShading: false,
+        vertexColors: hasVertexColors
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+
+      // Center and scale the model
+      geometry.computeBoundingBox();
+      const bbox = geometry.boundingBox;
+      const center = new THREE.Vector3();
+      bbox.getCenter(center);
+      
+      // Move geometry to center at origin
+      geometry.translate(-center.x, -center.y, -center.z);
+      
+      // Recompute bounding box after translation
+      geometry.computeBoundingBox();
+      const size = new THREE.Vector3();
+      geometry.boundingBox.getSize(size);
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const scale = 4 / maxDim;
+      mesh.scale.setScalar(scale);
+      
+      // Position mesh slightly above the grid
+      mesh.position.set(0, size.y * scale * 0.5, 0);
+
+      sceneRef.current.add(mesh);
+      modelRef.current = mesh;
+      setHasModel(true);
       setIsLoading(false);
-    };
-
-    reader.readAsText(file);
-  };
-
-  const handleFileInput = (e) => {
-    const file = e.target.files?.[0];
-    if (file && file.name.toLowerCase().endsWith('.obj')) {
-      loadOBJFile(file);
-    } else {
-      setError('Please select a valid .obj file');
+    } catch (err) {
+      setError('Failed to load OBJ file from backend.');
+      setIsLoading(false);
+      console.error(err);
     }
   };
+
+  // Load model when modelUrl prop changes
+  useEffect(() => {
+    if (modelUrl && sceneRef.current) {
+      loadOBJFromURL(modelUrl);
+    }
+  }, [modelUrl]);
 
   return (
     <div className="relative w-full h-full min-h-[400px] bg-card rounded-lg border border-border overflow-hidden">
       {/* 3D Canvas Container */}
       <div ref={containerRef} className="absolute inset-0" />
 
-      {/* Upload UI - Only show when no model is loaded */}
-      {!hasModel && !isLoading && (
+      {/* Placeholder - Show when no model URL provided */}
+      {!modelUrl && !isLoading && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <Box className="w-24 h-24 text-primary mb-4 animate-pulse" />
           <p className="text-muted-foreground text-lg">3D Preview</p>
-          <p className="text-muted-foreground/60 text-sm mt-2 mb-4">Upload an OBJ file to view</p>
-          <label className="pointer-events-auto cursor-pointer px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors flex items-center gap-2">
-            <Upload className="w-4 h-4" />
-            Choose OBJ File
-            <input
-              type="file"
-              accept=".obj"
-              onChange={handleFileInput}
-              className="hidden"
-            />
-          </label>
+          <p className="text-muted-foreground/60 text-sm mt-2">Waiting for model...</p>
         </div>
       )}
 
@@ -360,20 +343,6 @@ export const ModelViewer = () => {
         <div className="absolute bottom-4 left-4 text-xs text-muted-foreground bg-background/50 backdrop-blur-sm px-2 py-1 rounded">
           Drag to rotate • Scroll to zoom
         </div>
-      )}
-
-      {/* Upload new model button */}
-      {hasModel && (
-        <label className="absolute bottom-4 right-4 cursor-pointer px-3 py-1.5 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm flex items-center gap-2">
-          <Upload className="w-3 h-3" />
-          New Model
-          <input
-            type="file"
-            accept=".obj"
-            onChange={handleFileInput}
-            className="hidden"
-          />
-        </label>
       )}
     </div>
   );

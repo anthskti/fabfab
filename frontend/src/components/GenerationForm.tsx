@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-
+import modelAPI from '../routes.js';
 interface GenerationFormProps {
   onModelGenerated: () => void;
 }
