@@ -1,4 +1,11 @@
 # --------------------
+# User Generated
+# --------------------
+/output_models
+/temp_scripts
+/temp_uploads
+
+# --------------------
 # Python
 # --------------------
 __pycache__/
