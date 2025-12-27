@@ -17,8 +17,6 @@ __pycache__/
 *.pyd
 
 # Distribution / packaging
-build/
-dist/
 *.egg-info/
 pip-wheel-metadata/
 wheelhouse/
@@ -35,7 +33,6 @@ MANIFEST
 htmlcov/
 .coverage
 .coverage.*
-coverage/
 .tox/
 .nox/
 nosetests.xml
@@ -69,7 +66,6 @@ poetry.lock
 
 # Dependencies
 node_modules/
-/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -95,10 +91,6 @@ lerna-debug.log*
 # REACT
 # ============================================
 
-# Build outputs
-build/
-dist/
-
 # Storybook
 storybook-static/
 
@@ -112,7 +104,6 @@ storybook-static/
 
 # Cache
 .next/
-.nuxt/
 .cache/
 .parcel-cache/
 
@@ -138,22 +129,14 @@ next-env.d.ts
 # ============================================
 # BUILD OUTPUTS (GENERAL)
 # ============================================
-/build
+build/
+dist/
 out/
 public/build/
 
 # ============================================
 # ENVIRONMENT VARIABLES
 # ============================================
-.env
-.env.local
-.env.*.local
-.env.development
-.env.development.local
-.env.test
-.env.test.local
-.env.production
-.env.production.local
 .env*
 
 # ============================================
@@ -184,12 +167,9 @@ assets/css/
 *.sublime-workspace
 *.sublime-project
 
-# Vim
+# Vim / Emacs / Linux swap & backup files
 *.swp
 *.swo
-*~
-
-# Emacs
 *~
 \#*\#
 .#*
@@ -217,13 +197,10 @@ desktop.ini
 ehthumbs.db
 *.lnk
 
-# Linux
-*~
-
 # ============================================
 # TESTING / COVERAGE
 # ============================================
-/coverage
+coverage/
 *.lcov
 
 # ============================================
