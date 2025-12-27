@@ -14,7 +14,7 @@ export default function Home() {
   const [file, setFile] = useState(null);
   const [modelUrl, setModelUrl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [dims, setDims] = useState({ w: 1, h: 1, d: 1 });
+  const [dims, setDims] = useState({ l: 1, w: 1, h: 1 });
 
   const handleGenerate = async () => {
     if (!file) return alert("Upload an image first!");
@@ -22,9 +22,9 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("width", dims.l);
-    formData.append("height", dims.w);
-    formData.append("depth", dims.h);
+    formData.append("length", dims.l);
+    formData.append("width", dims.w);
+    formData.append("height", dims.h);
 
     try {
       // Assuming backend is on port 8000

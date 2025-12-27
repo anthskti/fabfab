@@ -2,20 +2,21 @@ import os
 import shutil
 import subprocess
 import uuid
-from pathlib import Path
+# from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from PIL import Image
-import onnxruntime as ort
-from rembg import remove
-import google.generativeai as genai
+# import onnxruntime as ort
+# from rembg import remove
+from google import genai
 from dotenv import load_dotenv
 
+load_dotenv()
 
 # CONFIG
 BLENDER_EXEC_PATH = "/Applications/Blender.app/Contents/MacOS/Blender"
-genai.configure(api_key=os.dotenv.GEMINI_API_KEY)
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 app = FastAPI()
 
@@ -57,7 +58,6 @@ async def create_model(
 
     # 2. Generate Blender Script via Gemini
     print("Consulting Gemini...")
-    model = genai.GenerativeModel('gemini-2.5-flash')
     
     prompt = f"""
     ROLE: You are a Senior Technical Artist specializing in the Blender 5.0 Python API.
@@ -107,7 +107,10 @@ async def create_model(
     - Do NOT try to model "exactly" pixel-perfect from vague descriptions; prioritize clean topology and structural likeness.
     """
     
-    response = model.generate_content([prompt, output_img])
+    response = client.models.generate_content(
+        model='gemini-3-flash-preview',
+        contents=[prompt, output_img],
+    )
     script_content = response.text.replace("```python", "").replace("```", "").strip()
     
     script_path = f"temp_scripts/{session_id}.py"
