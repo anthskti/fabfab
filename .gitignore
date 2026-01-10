@@ -1,89 +1,215 @@
-# --------------------
-# Python
-# --------------------
+# ============================================
+# PROJECT SPECIFIC
+# ============================================
+output_models/
+temp_scripts/
+temp_uploads/
+
+# ============================================
+# PYTHON
+# ============================================
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 *.pyo
 *.pyd
-# virtualenvs
-.venv/
-venv/
-env/
-ENV/
-.env
-# packaging / build
-build/
-dist/
+
+# Distribution / packaging
 *.egg-info/
 pip-wheel-metadata/
 wheelhouse/
-# pytest / coverage
+*.egg
+*.whl
+eggs/
+.eggs/
+sdist/
+develop-eggs/
+MANIFEST
+
+# Unit test / coverage reports
 .pytest_cache/
 htmlcov/
 .coverage
 .coverage.*
-coverage/
-# common IDEs/editors
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
 
-# --------------------
-# Node / JavaScript / React
-# --------------------
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# MyPy / type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ============================================
+# PYTHON VIRTUAL ENVIRONMENTS
+# ============================================
+.venv/
+venv/
+env/
+ENV/
+.python-version
+Pipfile.lock
+poetry.lock
+
+# ============================================
+# JAVASCRIPT / NODE.JS
+# ============================================
+
+# Dependencies
 node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-# build outputs
-dist/
-build/
-out/
-.next/
-.nuxt/
-.parcel-cache/
-.cache/
-public/build/
-# storybook, etc.
+lerna-debug.log*
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# ============================================
+# REACT
+# ============================================
+
+# Storybook
 storybook-static/
 
-# --------------------
-# Environment files
-# --------------------
-.env.local
-.env.*.local
-.env
+# ============================================
+# NEXT.JS
+# ============================================
 
-# --------------------
-# CSS / HTML / Tailwind
-# --------------------
-# ignore generated/minified CSS and sourcemaps (keep source css/partials tracked)
+# Build output
+/.next/
+/out/
+
+# Cache
+.next/
+.cache/
+.parcel-cache/
+
+# ============================================
+# VERCEL
+# ============================================
+.vercel
+
+# ============================================
+# TYPESCRIPT
+# ============================================
+*.tsbuildinfo
+next-env.d.ts
+
+# ============================================
+# NPM / YARN / PNPM PACKAGING
+# ============================================
+*.tgz
+.npmrc
+.yarnrc
+.pnpm-store/
+
+# ============================================
+# BUILD OUTPUTS (GENERAL)
+# ============================================
+build/
+dist/
+out/
+public/build/
+
+# ============================================
+# ENVIRONMENT VARIABLES
+# ============================================
+.env*
+
+# ============================================
+# CSS / TAILWIND / STYLING
+# ============================================
 *.min.css
 *.css.map
-# common generated CSS locations (build outputs)
 **/dist/*.css
 **/build/*.css
 public/css/
 assets/css/
 
-# If using Tailwind's output file in a specific path, adjust or remove the line above.
+# ============================================
+# IDEs & EDITORS
+# ============================================
 
-# --------------------
-# Misc / OS / tooling
-# --------------------
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (IntelliJ, PyCharm, WebStorm, etc.)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim / Emacs / Linux swap & backup files
+*.swp
+*.swo
+*~
+\#*\#
+.#*
+
+# TextMate
+*.tmproj
+*.tmproject
+tmtags
+
+# ============================================
+# OPERATING SYSTEMS
+# ============================================
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
 Thumbs.db
 desktop.ini
+ehthumbs.db
+*.lnk
+
+# ============================================
+# TESTING / COVERAGE
+# ============================================
+coverage/
+*.lcov
+
+# ============================================
+# MISCELLANEOUS
+# ============================================
 *.log
 *.tmp
 *.temp
-# Editor swap files
-*~
-*.swp
-# macOS resource forks
-._*
-# npm package lock files are usually tracked — do not ignore package-lock.json / yarn.lock unless intentional.
+*.pem
+*.bak
+*.orig
 
